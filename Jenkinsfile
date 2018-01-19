@@ -2,7 +2,7 @@ pipeline{
   agent none
   stages{
     stage('Hello'){
-      agent all
+      agent any
       steps{
         sh 'echo hello'
       }
