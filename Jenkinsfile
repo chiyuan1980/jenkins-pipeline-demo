@@ -13,11 +13,23 @@ pipeline {
         sh 'ls -al'
         sh 'pwd'
       }
-      post{
-        always{
+      post {
+        always {
           sh 'printenv'
         }
       }
+    }
+    stage('Test') {
+        agent any
+        steps{
+            sh 'docker run --rm -d  --name $BUILD_TAG -p 80:80 epas:flask'
+            sh 'curl -v `docker inspect --format="{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $BUILD_TAG`'
+        }
+        post {
+            always {
+                sh 'docker stop $BUILD_TAG'
+            }
+        }
     }
   }
 }
